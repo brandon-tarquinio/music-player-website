@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Music Player</title>
+  </head>
+
+  <body>
+    <h1>Brandon's Streaming Site</h1>
+
+    <div id="artist-panel-div">
+      <h3>Artists</h3>
+      <div class="search">
+        <form>
+          <h4>Search Artists</h4>
+          <input type='artist-search-request' />
+          <input class='do-artist-search-button' type='submit' value='Search' />
+        </form>
+      </div> 
+      <div class="panel">
+        <ul id="artist-list">
+        <ul>
+      </div>
+    </div>
+
+    <div id="album-panel-div">
+      <h3>Albums</h3>
+      <div class="panel">
+        <ul id="album-list">
+        <ul>
+      </div>
+    </div>
+
+    <div id="song-panel-div">
+      <h3>Songs</h3>
+      <div class="panel">
+        <ul id="song-list">
+        <ul>
+      </div>
+    </div>
+
+
+    <audio id="music-player"
+           controls
+           src="./getSong/?song=04%20Down%20With%20The%20Sickness.m4a">
+      Your browser does not support the <code>audio</code> element.
+    </audio>
+
+  </body>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+          integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+          crossorigin="anonymous">
+  </script>
+
+  <script type="text/javascript" src='Js/ClientJs/main.js'></script>
+
+</html>
