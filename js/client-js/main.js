@@ -1,21 +1,20 @@
+console.log("Loading main.js");
+queryAllArtists();
 window.onload = function() {
   queryAllArtists();
 }
 
 function queryAllArtists() {
+  console.log("Going to query all artists");
   // Where we will attach the artist list to. 
   var artistPanelDiv = document.getElementById("artist-panel-div");
   var artistPanelList = document.getElementById("artist-list");
-  
-  // Get list of artists
-  //var artistList = $.getJSON("./getAllArtists");
-  var request = new XMLHttpRequest();
-  request.open('GET', '/getMusic/', true);
-
-  request.onload = function() {
-    if (request.status >= 200 && request.status < 400) {
-      // Success!
-      var artistList = JSON.parse(request.responseText).Artists;
+   
+  getMusicRequest(
+    artistPanelDiv,
+    '', '', '',
+    function(json) {
+      var artistList = json.Artists;
 
       // For each artist add li
       artistList.forEach( function(artist) {
@@ -27,32 +26,17 @@ function queryAllArtists() {
         testAddPar.appendChild(testAddText);
         artistPanelList.appendChild(testAddPar);
       });
-    } else {
-      // We reached our target server, but it returned an error
-      var testAddPar = document.createElement("p");
-      testAddPar.setAttribute
-      var testAddText = document.createTextNode("Error getting artist from server");
-      testAddPar.appendChild(testAddText);
-      artistPanelDiv.appendChild(testAddPar);
+
     }
-  };
-
-  request.onerror = function() {
-    // There was a connection error of some sort
-    var testAddPar = document.createElement("p");
-    var testAddText = document.createTextNode("Could not connect to server");
-    testAddPar.appendChild(testAddText);
-    artistPanelDiv.appendChild(testAddPar);
-  };
-
-  request.send();
+  ); 
 }
 
 function getMusicRequest(errorDiv,
                          artist, album, song,
                          successHandler) {
   var request = new XMLHttpRequest();
-  request.open('GET', `/getMusic/?artist=${artist}&album=${album}&song=${song}`, true);
+  var url = `/getMusic/?artist=${artist}&album=${album}&song=${song}`;
+  request.open('GET', url, true);
 
   request.onload = function() {
     if (request.status >= 200 && request.status < 400) {
@@ -61,7 +45,7 @@ function getMusicRequest(errorDiv,
     } else {
       // We reached our target server, but it returned an error
       var testAddPar = document.createElement("p");
-      var testAddText = document.createTextNode("Error getting music from server");
+      var testAddText = document.createTextNode('Error getting ${url} from server');
       testAddPar.appendChild(testAddText);
       errorDiv.appendChild(testAddPar);
     }
@@ -78,13 +62,18 @@ function getMusicRequest(errorDiv,
   request.send();
 }
 
+function clearList(list) {
+  while (list.firstChild) {
+    list.removeChild(list.firstChild);
+  }
+}
+
 function queryAlbumsForArtist(artist) {
   var albumPanelDiv = document.getElementById("album-panel-div");
   var albumPanelList = document.getElementById("album-list");
-  // Clear previous albums
-  while (albumPanelList.firstChild) {
-    albumPanelList.removeChild(albumPanelList.firstChild);
-  }
+  // Clear previous albums and song list
+  clearList(albumPanelList);
+  clearList(document.getElementById("song-list"));
 
   getMusicRequest(
     albumPanelDiv,
@@ -106,13 +95,12 @@ function queryAlbumsForArtist(artist) {
     }
   ); 
 
-  artist = "Tool";
 }
 
 function querySongsForAlbum(artist, album) {
   var songPanelDiv = document.getElementById("song-panel-div");
   var songPanelList = document.getElementById("song-list");
-  // Clear previous albums
+  // Clear previous album's songs
   while (songPanelList.firstChild) {
     songPanelList.removeChild(songPanelList.firstChild);
   }
@@ -129,11 +117,9 @@ function querySongsForAlbum(artist, album) {
       // For each artist add li
       songList.forEach( function(song) {
         var testAddPar = document.createElement("LI");
-        /*
         testAddPar.onclick = function () {
-          querySongsForAlbum(artist, album); 
+          playSong(artist, album, song); 
         };
-        */
         var testAddText = document.createTextNode(song);
         testAddPar.appendChild(testAddText);
         songPanelList.appendChild(testAddPar);
@@ -158,6 +144,24 @@ function querySongsForAlbum(artist, album) {
   request.send();
 }
 
+function playSong(artist, album, song) {
+  var musicPlayer = document.getElementById("music-player");
+
+  console.log("Going to play song " + song + " from " + album + " by " + artist);
+  
+  //audioObj = new Audio('/getSong/?artist='+artist+'&album='+album+'&song='+song); 
+  //audioObj.addEventListener('loadeddata', () => {
+  //  let duration = audioObj.duration;
+  //});
+  musicPlayer.setAttribute("src", '/getMusic/?artist='+artist+'&album='+album+'&song='+song);
+  musicPlayer.addEventListener('canplay', () => {
+    console.log("Can Play Song!");
+    musicPlayer.play();
+  });
+  musicPlayer.addEventListener('play', () => {
+    console.log("I'm playing");
+  });
+}
 
 /*
 const url = './';  

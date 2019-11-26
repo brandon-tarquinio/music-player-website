@@ -21,7 +21,7 @@ http.createServer(function (req, res) {
   if (pathName == '/index.html') {
     console.log('Found index file request');
     return servePage(pathName, res);
-  } else if (pathName == '/Js/ClientJs/main.js') {
+  } else if (pathName == '/js/client-js/main.js') {
     console.log('Found main.js');
     return servePage(pathName, res); 
   //Handle song query
@@ -53,7 +53,7 @@ function serveSongRequest(urlParsed,res) {
   const songName = urlParsed.song;
   console.log("Song requested is " + songName);
 
-  const songPath =  musicPath + '/Disturbed/The Sickness/' + songName;
+  const songPath = musicPath + "/" + urlParsed.artist + "/" + urlParsed.album + "/" + urlParsed.song;
   console.log("Song path is " + songPath);
 
   // Check that file exists
@@ -74,7 +74,7 @@ function serveSongRequest(urlParsed,res) {
   }
 
   return fs.readFile(songPath, function (err, data) {
-    res.writeHead(200, {'Content-Type': 'audio/mp4'});
+    res.writeHead(200, {'Content-Type': 'audio/mpeg'});
     res.write(data);
     res.end();
   });
@@ -151,6 +151,7 @@ function serveGetMusicRequest(urlParsed,res) {
         getAllSongsJson(albumPath, res);
       } else {
         console.log("Song is set so return song file");
+        serveSongRequest(urlParsed, res);
       }
     }
   } else {
