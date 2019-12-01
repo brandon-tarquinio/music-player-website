@@ -1,5 +1,4 @@
 console.log("Loading main.js");
-queryAllArtists();
 window.onload = function() {
   queryAllArtists();
 }
@@ -9,7 +8,9 @@ function queryAllArtists() {
   // Where we will attach the artist list to. 
   var artistPanelDiv = document.getElementById("artist-panel-div");
   var artistPanelList = document.getElementById("artist-list");
-   
+
+  clearList(artistPanelList);   
+
   getMusicRequest(
     artistPanelDiv,
     '', '', '',
@@ -18,15 +19,16 @@ function queryAllArtists() {
 
       // For each artist add li
       artistList.forEach( function(artist) {
-        var testAddPar = document.createElement("LI");
-        testAddPar.onclick = function () {
-          queryAlbumsForArtist(artist);
-        };
-        var testAddText = document.createTextNode(artist);
-        testAddPar.appendChild(testAddText);
-        artistPanelList.appendChild(testAddPar);
-      });
+        var newListElement = createClickableLI(
+          function () {
+            queryAlbumsForArtist(artist);
+          } 
+        );
 
+        var testAddText = document.createTextNode(artist);
+        newListElement.appendChild(testAddText);
+        artistPanelList.appendChild(newListElement);
+      });
     }
   ); 
 }
@@ -68,6 +70,13 @@ function clearList(list) {
   }
 }
 
+function createClickableLI(onClickFunction) {
+  var newListElement = document.createElement("LI");
+  newListElement.classList.add("clickable");
+  newListElement.onclick = onClickFunction; 
+  return newListElement;
+}
+
 function queryAlbumsForArtist(artist) {
   var albumPanelDiv = document.getElementById("album-panel-div");
   var albumPanelList = document.getElementById("album-list");
@@ -84,13 +93,15 @@ function queryAlbumsForArtist(artist) {
       
       // For each artist add li
       albumList.forEach( function(album) {
-        var testAddPar = document.createElement("LI");
-        testAddPar.onclick = function () {
-          querySongsForAlbum(artist, album); 
-        };
+        var newListElement = createClickableLI(
+          function () {
+            querySongsForAlbum(artist, album); 
+          } 
+        );
+
         var testAddText = document.createTextNode(album);
-        testAddPar.appendChild(testAddText);
-        albumPanelList.appendChild(testAddPar);
+        newListElement.appendChild(testAddText);
+        albumPanelList.appendChild(newListElement);
       });
     }
   ); 
@@ -101,47 +112,29 @@ function querySongsForAlbum(artist, album) {
   var songPanelDiv = document.getElementById("song-panel-div");
   var songPanelList = document.getElementById("song-list");
   // Clear previous album's songs
-  while (songPanelList.firstChild) {
-    songPanelList.removeChild(songPanelList.firstChild);
-  }
+  clearList(songPanelList); 
 
-  var request = new XMLHttpRequest();
-  request.open('GET', '/getMusic/?artist='+artist+'&album='+album, true);
-
-  request.onload = function() {
-    if (request.status >= 200 && request.status < 400) {
-      // Success!
-      var songList = JSON.parse(request.responseText).Songs;
+  getMusicRequest(
+    songPanelDiv,
+    artist, album, '',
+    function(json) {
+      var songList = json.Songs;
       console.log(songList);
-      
-      // For each artist add li
+
+      // For each song add li
       songList.forEach( function(song) {
-        var testAddPar = document.createElement("LI");
-        testAddPar.onclick = function () {
-          playSong(artist, album, song); 
-        };
+        var newListElement = createClickableLI(
+          function () {
+            playSong(artist, album, song); 
+          } 
+        );
+
         var testAddText = document.createTextNode(song);
-        testAddPar.appendChild(testAddText);
-        songPanelList.appendChild(testAddPar);
+        newListElement.appendChild(testAddText);
+        songPanelList.appendChild(newListElement);
       });
-    } else {
-      // We reached our target server, but it returned an error
-      var testAddPar = document.createElement("p");
-      var testAddText = document.createTextNode("Error getting songs from server");
-      testAddPar.appendChild(testAddText);
-      albumPanelDiv.appendChild(testAddPar);
     }
-  };
-
-  request.onerror = function() {
-    // There was a connection error of some sort
-    var testAddPar = document.createElement("p");
-    var testAddText = document.createTextNode("Could not connect to server");
-    testAddPar.appendChild(testAddText);
-    artistPanelDiv.appendChild(testAddPar);
-  };
-
-  request.send();
+  ); 
 }
 
 function playSong(artist, album, song) {

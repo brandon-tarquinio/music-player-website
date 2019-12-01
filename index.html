@@ -2,49 +2,55 @@
 <html>
   <head>
     <title>Music Player</title>
+    <link href="/css/style.css" type="text/css" rel="stylesheet">
   </head>
 
   <body>
-    <h1>Brandon's Streaming Site</h1>
-
-    <div id="artist-panel-div">
-      <h3>Artists</h3>
-      <div class="search">
-        <form>
-          <h4>Search Artists</h4>
-          <input type='artist-search-request' />
-          <input class='do-artist-search-button' type='submit' value='Search' />
-        </form>
+    <div class="grid">
+      <div id="banner">
+        <h1>Brandon's Streaming Site</h1>
       </div> 
-      <div class="panel">
-        <ul id="artist-list">
-        <ul>
+
+      <div class="col" id="artist-col">
+        <div id="artist-panel-div">
+          <h3>Artists</h3>
+          <div class="search">
+            <form>
+              <input type='artist-search-request' placeholder='Search Artists'/>
+              <input class='do-artist-search-button' type='submit' value='Search'/>
+            </form>
+          </div> 
+          <div class="panel" id="artist-panel">
+            <ul id="artist-list">
+            <ul>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div id="album-panel-div">
-      <h3>Albums</h3>
-      <div class="panel">
-        <ul id="album-list">
-        <ul>
+      <div class="col" id="album-song-col">
+        <div id="album-panel-div">
+          <h3>Albums</h3>
+          <div class="panel">
+            <ul id="album-list">
+            <ul>
+          </div>
+        </div>
+
+        <div id="song-panel-div">
+          <h3>Songs</h3>
+          <div class="panel">
+            <ul id="song-list">
+            <ul>
+          </div>
+        </div>
       </div>
+
+
+      <audio id="music-player"
+             controls>
+        Your browser does not support the <code>audio</code> element.
+      </audio>
     </div>
-
-    <div id="song-panel-div">
-      <h3>Songs</h3>
-      <div class="panel">
-        <ul id="song-list">
-        <ul>
-      </div>
-    </div>
-
-
-    <audio id="music-player"
-           controls
-           src="./getSong/?song=04%20Down%20With%20The%20Sickness.m4a">
-      Your browser does not support the <code>audio</code> element.
-    </audio>
-
   </body>
   <script src="https://code.jquery.com/jquery-3.2.1.min.js"
           integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="

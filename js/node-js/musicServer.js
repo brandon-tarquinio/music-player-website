@@ -24,6 +24,9 @@ http.createServer(function (req, res) {
   } else if (pathName == '/js/client-js/main.js') {
     console.log('Found main.js');
     return servePage(pathName, res); 
+  } else if (pathName == '/css/style.css') {
+    console.log('Found style.css');
+    return servePage(pathName, res); 
   //Handle song query
   } else if (pathName == '/getSong/') {
     console.log('Found getSong request');
@@ -41,12 +44,29 @@ http.createServer(function (req, res) {
 const rootPath = '../../';
 function servePage(pathName, res) {
   return fs.readFile(rootPath + pathName, function (err, data) {
-    res.writeHead(200, {'Content-Type': 'text/html'});
+    res.writeHead(200, {'Content-Type': getMimeType(getFileType(pathName))});
     res.write(data);
     res.end();
   });
 }
 
+function getFileType(path) {
+  var fileType = path.split(".")[1];
+  console.log("Parsed filetype:  " + fileType + " from path " + path);
+  return fileType;
+}
+
+function getMimeType(fileExtension) {
+  if (fileExtension == "js") {
+    return 'text/javascript';
+  } else if (fileExtension == "html") {
+    return 'text/html';
+  } else if (fileExtension == "css") {
+    return 'text/css';
+  } else {
+    return 'text/plain';
+  }
+}
 
 
 function serveSongRequest(urlParsed,res) {
